@@ -1,4 +1,46 @@
+module Gosu
+  class Image
+  end
+end
+
 module Quarters
   VERSION: String
   # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+
+  class Coin
+    attr_reader x: Integer
+    attr_reader y: Integer
+
+    def draw: (grey: Float) -> void
+  end
+
+  class App
+    BOARD_HEIGHT: Integer
+    BOARD_WIDTH: Integer
+
+    @allowed: Array[Integer]
+    @bg: Gosu::Image
+    @coins: Array[Coin]
+    @display_power: Integer
+    @highlight: Integer?
+    @power: Integer
+    @redraw: bool
+    @state: Symbol
+
+    def draw: () -> void
+    def update: () -> void
+    def needs_redraw?: () -> bool
+
+    def self.make_background: () -> Gosu::Image
+
+    private
+
+    def check_for_collisions: () -> bool
+    def reset_coins: () -> void
+    def coins_overlap?: (a: Coin, b: Coin) -> bool
+  end
+
+  module Physics
+    def calculate_collisions: (a: Coin, b: Coin) -> void
+  end
 end
