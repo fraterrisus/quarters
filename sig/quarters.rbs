@@ -1,6 +1,9 @@
 module Gosu
   class Image
   end
+
+  class Color
+  end
 end
 
 module Quarters
@@ -17,6 +20,7 @@ module Quarters
   class App
     BOARD_HEIGHT: Integer
     BOARD_WIDTH: Integer
+    PITCH_COLOR: Gosu::Color
 
     @allowed: Array[Integer]
     @bg: Gosu::Image
@@ -38,6 +42,7 @@ module Quarters
     def check_for_collisions: () -> bool
     def reset_coins: () -> void
     def coins_overlap?: (a: Coin, b: Coin) -> bool
+    def wall_bounce?: (coin: Coin) -> bool
   end
 
   module Physics

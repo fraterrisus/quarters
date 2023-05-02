@@ -1,5 +1,25 @@
 module Quarters
   module Physics
+    def self.calculate_horizontal_bounce(c, dampen = 1.0)
+      dx = Gosu.offset_x(c.angle, c.speed)
+      dy = Gosu.offset_y(c.angle, c.speed)
+      force = (c.speed * 2) + Coin::STATIC_MU
+      angle = Gosu.angle(0, 0, dx * -1, dy)
+      c.kick(force * dampen, angle)
+    end
+
+    def self.calculate_vertical_bounce(c, dampen = 1.0)
+      dx = Gosu.offset_x(c.angle, c.speed)
+      dy = Gosu.offset_y(c.angle, c.speed)
+      force = (c.speed * 2) + Coin::STATIC_MU
+      angle = Gosu.angle(0, 0, dx, dy * -1)
+      c.kick(force * dampen, angle)
+    end
+
+    def self.calculate_rebound(c)
+      c.kick((c.speed * 2) + Coin::STATIC_MU, (c.angle + 180) % 360)
+    end
+
     def self.calculate_collision(a, b)
       pi = 2 * Math.acos(0.0)
 

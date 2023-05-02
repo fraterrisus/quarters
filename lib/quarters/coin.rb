@@ -4,7 +4,7 @@ require 'gosu'
 
 module Quarters
   class Coin
-    DIAMETER = 20
+    DIAMETER = 30
 
     IMAGE_DATA = [
       0xff.chr, 0xff.chr, 0xff.chr, 0xff.chr
@@ -18,8 +18,8 @@ module Quarters
       @y = y
       @speed = 0
       @angle = 0
-      # @image = Gosu::Image.from_blob(WIDTH, HEIGHT, IMAGE_DATA)
-      @image = Gosu::Image.new('lib/media/coin.png')
+      @image = Gosu::Image.from_blob(DIAMETER, DIAMETER, IMAGE_DATA)
+      # @image = Gosu::Image.new('lib/media/coin.png')
     end
 
     def warp(x, y)
