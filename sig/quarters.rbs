@@ -1,4 +1,9 @@
 module Gosu
+  def self.offset_x: (theta: Float, r: Float) -> Float
+  def self.offset_y: (theta: Float, r: Float) -> Float
+
+  def self.button_down?: (code: Integer) -> bool
+
   class Image
   end
 
@@ -11,10 +16,29 @@ module Quarters
   # See the writing guide of rbs: https://github.com/ruby/rbs#guides
 
   class Coin
+    DIAMETER: Integer
+    RADIUS: Integer
+    FORCE_MULTIPLIER: Float
+    STATIC_MU: Float
+    SLIDING_MU: Float
+
+    @x: Integer
+    @y: Integer
+    @speed: Float
+    @angle: Integer
+    @image: Gosu::Image
+
     attr_reader x: Integer
     attr_reader y: Integer
+    attr_accessor speed: Float
+    attr_reader angle: Integer
 
     def draw: (grey: Float) -> void
+    def kick: (force: Float, angle: Float) -> void
+    def kick_with_friction: (force: Float, angle: Float) -> void
+    def warp: (x: Integer, y: Integer) -> void
+
+    def self.compensate_for_static_friction: (force: Integer) -> Integer
   end
 
   class App
@@ -27,25 +51,33 @@ module Quarters
     @coins: Array[Coin]
     @display_power: Integer
     @highlight: Integer?
+    @lost: bool
     @power: Integer
     @redraw: bool
     @state: Symbol
+    @won: bool
 
     def draw: () -> void
     def update: () -> void
     def needs_redraw?: () -> bool
 
-    def self.make_background: () -> Gosu::Image
-
     private
 
-    def check_for_collisions: () -> bool
-    def reset_coins: () -> void
+    def coin_collisions?: () -> bool
     def coins_overlap?: (a: Coin, b: Coin) -> bool
     def wall_bounce?: (coin: Coin) -> bool
+    def out_of_bounds?: (coin: Coin) -> bool
+
+    def reset_coins: () -> void
+    def serve: () -> void
+
+    def self.make_background: () -> Gosu::Image
   end
 
   module Physics
-    def calculate_collisions: (a: Coin, b: Coin) -> void
+    def self.calculate_horizontal_bounce: (c: Coin, dampen: Float) -> void
+    def self.calculate_vertical_bounce: (c: Coin, dampen: Float) -> void
+    def self.calculate_collision: (a: Coin, b: Coin) -> void
+    def self.calculate_rebound: (c: Coin) -> void
   end
 end

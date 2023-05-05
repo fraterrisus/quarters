@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require "quarters"
-require "quarters/app"
+require 'quarters'
+require 'quarters/app'
 
 Quarters::App.new.show
