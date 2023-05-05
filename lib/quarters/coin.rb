@@ -49,10 +49,10 @@ module Quarters
       @speed.positive?
     end
 
-    def step
-      @x += Gosu.offset_x(@angle, @speed) / 10
-      @y += Gosu.offset_y(@angle, @speed) / 10
-      apply_friction
+    def step(frac)
+      @x += Gosu.offset_x(@angle, @speed) / frac
+      @y += Gosu.offset_y(@angle, @speed) / frac
+      apply_friction(frac)
     end
 
     def draw(grey = 1.0)
@@ -71,8 +71,8 @@ module Quarters
 
     private
 
-    def apply_friction
-      @speed -= SLIDING_MU / 10
+    def apply_friction(frac)
+      @speed -= SLIDING_MU / frac
       @speed = 0.0 if @speed < 0.1
     end
   end

@@ -9,6 +9,9 @@ module Quarters
     WINDOW_HEIGHT = 1024
     WINDOW_WIDTH = 768
 
+    # ms per frame
+    TIME_DIVIDER = 5
+
     MARGIN = 10
     PITCH_X0 = MARGIN
     PITCH_X1 = WINDOW_WIDTH - MARGIN
@@ -44,7 +47,7 @@ module Quarters
       handle_movement if @state == :moving
 
       if Gosu.button_down?(Gosu::KB_TAB)
-        return if @state == :end
+        return unless @state == :play
 
         unless @tab_pushed
           select_next_coin
@@ -63,23 +66,16 @@ module Quarters
         elsif @state == :serve
           serve
         elsif @highlight
-          @start_time ||= Gosu.milliseconds
-          @power = ((Gosu.milliseconds - @start_time) * 0.1).round(0)
+          @reference_time ||= Gosu.milliseconds
+          @power = ((Gosu.milliseconds - @reference_time) * 0.1).round(0)
           @power = 100 if @power > 100
-          @redraw = true
-        end
-      elsif Gosu.button_down?(Gosu::MS_RIGHT) # TODO: testing, remove
-        return if @state == :end
-
-        if @highlight
-          @coins[@highlight].warp(mouse_x, mouse_y)
           @redraw = true
         end
       elsif Gosu.button_down?(Gosu::KB_R)
         reset_coins unless @state == :serve
         @redraw = true
       elsif @state == :play && @power.positive?
-        @start_time = nil
+        @reference_time = nil
         generate_goal_line
         flick_coin
       end
@@ -128,18 +124,22 @@ module Quarters
     private
 
     def handle_movement
+      @reference_time ||= Gosu.milliseconds
       if @coins.select(&:moving?).any?
-        @coins.each(&:step)
-        10.times do
+        steps = (Gosu.milliseconds - @reference_time) / TIME_DIVIDER
+        @coins.each { |c| c.step(TIME_DIVIDER) }
+        steps.times do
           @coins.select(&:moving?).each { |c| wall_bounce?(c) }
           check_goal_line unless @goal == :yes
           @lost = true if coin_collisions?
           @won = true if check_for_win
-          @coins.each(&:step)
+          @coins.each { |c| c.step(TIME_DIVIDER) }
         end
         @redraw = true
         @coins.each { |c| @lost = true if out_of_bounds?(c) }
+        @reference_time = Gosu.milliseconds
       else
+        @reference_time = nil
         @lost = true if @highlight && @goal != :yes
         if @won || @lost
           @state = :end
@@ -276,7 +276,6 @@ module Quarters
 
         @hits.unshift([@highlight, i])
         Physics.calculate_collision(@coins[@highlight], @coins[i])
-        puts "plink! (#{@highlight},#{i})"
         plink = true
       end
 
