@@ -12,12 +12,12 @@ module Quarters
     STATIC_MU = 5.0
     SLIDING_MU = 0.7
 
-    def initialize(x = 0, y = 0)
+    def initialize(x = 0, y = 0, load_image: true)
       @x = x
       @y = y
       @speed = 0.0
       @angle = 0
-      @image = Gosu::Image.new('lib/media/quarter.png')
+      @image = Gosu::Image.new('lib/media/quarter.png') if load_image
     end
 
     attr_reader :x, :y, :angle, :speed, :image

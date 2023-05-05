@@ -7,8 +7,8 @@ require 'quarters/physics'
 RSpec.describe 'Quarters::Physics' do
   context 'calculate_collision' do
     context 'for a 45d collision' do
-      let(:coin_1) { Quarters::Coin.new(1, 1) }
-      let(:coin_2) { Quarters::Coin.new(0, 0) }
+      let(:coin_1) { Quarters::Coin.new(1, 1, load_image: false) }
+      let(:coin_2) { Quarters::Coin.new(0, 0, load_image: false) }
 
       before do
         coin_1.kick(5.0, 0.0)
@@ -29,8 +29,8 @@ RSpec.describe 'Quarters::Physics' do
     end
 
     context 'for a head-on collision' do
-      let(:coin_1) { Quarters::Coin.new(1, 1) }
-      let(:coin_2) { Quarters::Coin.new(1, 0) }
+      let(:coin_1) { Quarters::Coin.new(1, 1, load_image: false) }
+      let(:coin_2) { Quarters::Coin.new(1, 0, load_image: false) }
 
       before do
         coin_1.kick(5.0, 0.0)
